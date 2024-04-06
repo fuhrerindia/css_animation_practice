@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      .progress {
+        height: 5px;
+        background-image: linear-gradient(
+          90deg,
+          red,
+          orange,
+          rgb(130, 224, 67)
+        );
+        animation: 1s progressize infinite linear;
+      }
+
+      .prnt {
+        width: 100%;
+        display: flex;
+        animation: 1s parentanimate infinite steps(1);
+      }
+      p {
+        transform: translateX(-255px);
+      }
+      p:first-child {
+        animation: 1s show forwards;
+      }
+      .modal {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        background-color: #00000070;
+        backdrop-filter: blur(3px);
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        z-index: 1;
+        visibility: hidden;
+      }
+      .msg {
+        width: 150px;
+        background-color: #fff;
+        padding: 25px 15px;
+        border-radius: 5px;
+        visibility: hidden;
+      }
+      .slides {
+        width: 100vw;
+        height: 500px;
+        display: flex;
+        overflow-x: hidden;
+      }
+      .slides div {
+        min-width: 100vw;
+        height: 100%;
+      }
+      .slides div:nth-child(even) {
+        background-color: orange;
+      }
+      .slides div:nth-child(odd) {
+        background-color: green;
+      }
+      @keyframes show {
+        from {
+          transform: translateX(-255px); /* Changed translate to translateX */
+        }
+        to {
+          transform: translateX(0px); /* Changed translate to translateX */
+        }
+      }
+
+      @keyframes popupbox {
+        from {
+          visibility: hidden;
+          transform: scale(0, 0);
+        }
+        to {
+          visibility: visible;
+          transform: scale(1, 1);
+        }
+      }
+      @keyframes dropbox {
+        from {
+          visibility: visible;
+          transform: scale(1, 1);
+        }
+        to {
+          visibility: hidden;
+          transform: scale(0, 0);
+        }
+      }
+
+      @keyframes showmodal {
+        from {
+          opacity: 0;
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+      @keyframes hidemodal {
+        from {
+          opacity: 1;
+          visibility: visible;
+        }
+        to {
+          visibility: hidden;
+          opacity: 0;
+        }
+      }
+      @keyframes progressize {
+        0% {
+          width: 0;
+        }
+        50% {
+          width: 100vw;
+        }
+        100% {
+          width: 0;
+        }
+      }
+
+      @keyframes parentanimate {
+        0% {
+          justify-content: flex-start;
+        }
+        50% {
+          justify-content: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="modal">
+      <div class="msg">
+        <h2>Title</h2>
+        <article>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quo, ipsam,
+          adipisci excepturi odio facilis provident est ducimus numquam
+          blanditiis nisi nemo praesentium harum nam, soluta reiciendis labore.
+          Asperiores, iusto nostrum.
+        </article>
+        <button onclick="hideModal()">CLOSE</button>
+      </div>
+    </div>
+    <div class="prnt">
+      <div class="progress"></div>
+    </div>
+    <div>
+      <p>The first paragraph.</p>
+      <p>The second paragraph.</p>
+      <p>The third paragraph.</p>
+      <p>The fourth paragraph.</p>
+      <p>The fifth paragraph.</p>
+    </div>
+    <button id="btn">Click Me</button>
+
+    <div class="slides">
+      <div></div>
+      <div></div>
+    </div>
+    <button id="left"><</button>
+    <button id="right">></button>
+    <script>
+      const ps = document.querySelectorAll("p");
+      const last = ps.length - 1;
+      ps.forEach((item, index) => {
+        ps[index].addEventListener("animationend", () => {
+          if (index !== last) {
+            ps[index + 1].style.animation = "1s show forwards";
+          }
+        });
+      });
+      const showModal = (title, message) => {
+        const modal = document.querySelector(".modal");
+        const msg = document.querySelector(".msg");
+
+        msg.querySelector("h2").innerText = title;
+        msg.querySelector("article").innerText = message;
+        msg.style.visibility = "hidden";
+
+        modal.style.animation = "0.3s showmodal forwards";
+        msg.style.animation = "0.3s popupbox forwards 0.2s";
+      };
+      document
+        .querySelector("#btn")
+        .addEventListener("click", () =>
+          showModal("Modal Title", "Modal Message")
+        );
+
+      const hideModal = () => {
+        const modal = document.querySelector(".modal");
+        const msg = document.querySelector(".msg");
+
+        msg.style.visibility = "visible";
+        modal.style.animation = "1s hidemodal forwards";
+        msg.style.animation = "0.6s dropbox forwards 0.2s";
+      };
+    </script>
+  </body>
+</html>
